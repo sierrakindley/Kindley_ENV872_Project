@@ -23,6 +23,7 @@ soil, soil temperature, soil moisture, California, climate, agriculture
 Data were collected using the Soil Climate Analysis Network (SCAN) (https://wcc.sc.egov.usda.gov/nwcc/rgrpt?report=daily_scan_por). SCAN is a comprehensive, nationwide soil moisture and climate information system designed to provide data to support natural resource assessments and conservation activities. Administered by the United States Department of Agriculture Natural Resources Conservation Service (NRCS) through the National Water and Climate Center (NWCC), in cooperation with the NRCS National Soil Survey Center, the system focuses on agricultural areas of the U.S. monitoring soil temperature and soil moisture content at several depths, soil water level, air temperature, relative humidity, solar radiation, wind, precipitation, barometric pressure, and more. 
 The following selections were made within the dataset:
 * California (Geographic Area)
+* Bodie Hills, Death Valley Jct, Deep Springs, Ford Dry Lake, French Gulch, Monocline Ridge (Site Selection)
 * Daily SCAN Standard Report - Period of Record (Data Report Type)
 * Download CSV (spreadsheet)
 
@@ -42,7 +43,7 @@ Data files are named according to the following naming convention: 'databasename
 
 **stage** refers to the stage in the data management pipeline (e.g. raw, cleaned, processed)
 
-**format** is a non-proprietary file format (e.g., .CSV, .txt)
+**format** is a non-proprietary file format (e.g., .csv, .txt)
 
 ## Metadata
 

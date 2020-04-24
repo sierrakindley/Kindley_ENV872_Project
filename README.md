@@ -6,9 +6,9 @@ Repository for Sierra Kindley's Environmental Data Analytics final project at Du
 
 This repository was created for Sierra Kindley's Environmental Data Analytics final project at Duke University (spring 2020). 
 
-The six Soil Climate Analysis Network (SCAN) datasets included in this repository contain daily soil moisture and climate data at sites located in the state of California. Each dataset contains data from a single sampling site in California, so a total of six sites are represented. These sites are located at different elevations and in various regions of the state.
+The five Soil Climate Analysis Network (SCAN) datasets included in this repository contain daily soil moisture and climate data at sites located in the state of California. Each dataset contains data from a single sampling site in California, so a total of five sites are represented. These sites are located at different elevations and in various regions of the state.
 
-The primary aim of this project is to analyze the daily soil moisture and climate data from the selected sites in California and identify trends in soil moisture and soil temperature relative to soil depth, site elevation, and time of year. These analyses will be performed on data from 2014 to 2017.
+The primary aim of this project is to analyze the daily soil moisture and climate data from the selected sites in California and identify trends in soil moisture and soil temperature relative to soil depth, site (elevation--all sites are located at different elevations), and time of year. These analyses will be performed on data from 2015 to 2019 (01/01/2015 to 12/31/2019).
 
 ## Investigators
 
@@ -23,17 +23,17 @@ soil, soil temperature, soil moisture, California, climate, agriculture
 Data were collected using the Soil Climate Analysis Network (SCAN) (https://wcc.sc.egov.usda.gov/nwcc/rgrpt?report=daily_scan_por). SCAN is a comprehensive, nationwide soil moisture and climate information system designed to provide data to support natural resource assessments and conservation activities. Administered by the United States Department of Agriculture Natural Resources Conservation Service (NRCS) through the National Water and Climate Center (NWCC), in cooperation with the NRCS National Soil Survey Center, the system focuses on agricultural areas of the U.S. monitoring soil temperature and soil moisture content at several depths, soil water level, air temperature, relative humidity, solar radiation, wind, precipitation, barometric pressure, and more. 
 The following selections were made within the dataset:
 * California (Geographic Area)
-* Bodie Hills, Death Valley Jct, Deep Springs, Ford Dry Lake, French Gulch, Monocline Ridge (Site Selection)
+* Bodie Hills, Cochora Ranch, Deep Springs, Ford Dry Lake, French Gulch (Site Selection)
 * Daily SCAN Standard Report - Period of Record (Data Report Type)
 * Download CSV (spreadsheet)
 
-The CSV files were saved as 'SCAN_BodieHillsCA_raw.csv', 'SCAN_DeathValleyJctCA_raw.csv', 'SCAN_DeepSpringsCA_raw.csv', 'SCAN_FordDryLakeCA_raw.csv', 'SCAN_FrenchGulchCA_raw.csv', and 'SCAN_MonoclineRidgeCA_raw.csv'.
+The CSV files were saved as 'SCAN_BodieHillsCA_raw.csv', 'SCAN_CochoraRanchCA_raw.csv', 'SCAN_DeepSpringsCA_raw.csv', 'SCAN_FordDryLakeCA_raw.csv', and 'SCAN_FrenchGulchCA_raw.csv'.
 
 Data were first accessed on 2020-04-10.
 
 ## Folder structure, file formats, and naming conventions 
 
-Within this repository are the following folders: Code, Data, and Output. The 'Code' folder contains R scripts and Rmd files pertaining to the project. The 'Data' folder contains two folders ('Raw' and 'Processed')--one containing raw data (primarily .csv files) and one for processed data (primarily .csv files). The 'Output' folder contains any outputs (e.g. figures, graphs) generated from data analysis and visualization. Please note: the 'Processed' data folder, the 'Code' folder, and the 'Output' folder have not yet been formally created in the repository, as an empty folder cannot be created in GitHub. These folders will be added to the repository as soon as the appropriate content is generated to place in them.
+Within this repository are the following folders: Code, Data, and Output. The 'Code' folder contains R scripts and Rmd files pertaining to the project. The 'Data' folder contains two folders ('Raw' and 'Processed')--one containing raw data (primarily .csv files) and one for processed data (primarily .csv files). The 'Output' folder contains any outputs (e.g. figures, graphs) generated from data analysis and visualization (primarily .png files).
 
 Data files are named according to the following naming convention: 'databasename_location_stage.format', where:
 

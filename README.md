@@ -8,7 +8,7 @@ This repository was created for Sierra Kindley's Environmental Data Analytics fi
 
 The five Soil Climate Analysis Network (SCAN) datasets included in this repository contain daily soil moisture and climate data at sites located in the state of California. Each dataset contains data from a single sampling site in California, so a total of five sites are represented. These sites are located at different elevations and in various regions of the state.
 
-The primary aim of this project is to analyze the daily soil moisture and climate data from the selected sites in California and identify trends in soil moisture and soil temperature relative to soil depth, site (elevation--all sites are located at different elevations), and time of year. These analyses will be performed on data from 2015 to 2019 (01/01/2015 to 12/31/2019).
+The primary aim of this project is to analyze the daily soil moisture and climate data from the selected sites in California and identify trends in soil moisture and soil temperature relative to soil depth, solar radiation, site (specifically with regards to elevation--all sites are located at different elevations), and time of year. These analyses will be performed on data from 2015 to 2019 (01/01/2015 to 12/31/2019).
 
 ## Investigators
 

@@ -1,0 +1,99 @@
+---
+output: 
+  pdf_document:
+    keep_tex: yes
+    fig_caption: yes
+    number_sections: yes
+geometry: margin=2.54cm
+title: "Analyzing Trends in Soil Moisture and Temperature at SCAN Sites in California from 2015-2019"
+subtitle: "https://github.com/sierrakindley/Kindley_ENV872_Project"
+author: "Sierra Kindley"
+fontsize: 12pt
+mainfont: Times New Roman
+
+---
+
+\newpage
+\tableofcontents 
+\newpage
+\listoftables 
+\newpage
+\listoffigures 
+\newpage
+
+```{r setup, include=FALSE}
+# Set and verify working directory
+setwd("/Users/sierr/Documents/Duke University/ENVIRON-872L/Kindley_ENV872_Project")
+getwd() 
+
+# Load packages
+library(tidyverse) 
+library(lubridate) 
+library(plyr)
+library(dplyr)
+library(ggplot2)
+library(cowplot) 
+library(RColorBrewer)
+
+# Set ggplot theme
+sierratheme <- theme_classic(base_size = 14) +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "top", 
+        plot.title = element_text(face = "bold", size = 16, 
+                                  color = "black", hjust = 0.5))
+theme_set(sierratheme)
+
+# Load datasets
+SCAN.BodieHills.CA <- read.csv("./Data/Raw/SCAN_BodieHillsCA_raw.csv")
+SCAN.DeepSprings.CA <- read.csv("./Data/Raw/SCAN_DeepSpringsCA_raw.csv")
+SCAN.FrenchGulch.CA <- read.csv("./Data/Raw/SCAN_FrenchGulchCA_raw.csv")
+SCAN.CochoraRanch.CA <- read.csv("./Data/Raw/SCAN_CochoraRanchCA_raw.csv")
+SCAN.FordDryLake.CA <- read.csv("./Data/Raw/SCAN_FordDryLakeCA_raw.csv")
+```
+
+
+# Rationale and Research Questions
+The primary aim of this project is to analyze the daily soil moisture and climate data from the selected sites in California and identify trends in soil moisture and soil temperature relative to soil depth, site (elevation--all sites are located at different elevations), and time of year. These analyses will be performed on data from 2015 to 2019 (01/01/2015 to 12/31/2019).
+
+
+\newpage
+
+# Dataset Information
+Data were collected using the Soil Climate Analysis Network (SCAN) (https://wcc.sc.egov.usda.gov/nwcc/rgrpt?report=daily_scan_por). SCAN is a comprehensive, nationwide soil moisture and climate information system designed to provide data to support natural resource assessments and conservation activities. Administered by the United States Department of Agriculture Natural Resources Conservation Service (NRCS) through the National Water and Climate Center (NWCC), in cooperation with the NRCS National Soil Survey Center, the system focuses on agricultural areas of the U.S. monitoring soil temperature and soil moisture content at several depths, soil water level, air temperature, relative humidity, solar radiation, wind, precipitation, barometric pressure, and more. 
+
+The following selections were made within the dataset:
+* California (Geographic Area)
+* Bodie Hills, Cochora Ranch, Deep Springs, Ford Dry Lake, French Gulch (Site Selection)
+* Daily SCAN Standard Report - Period of Record (Data Report Type)
+* Download CSV (spreadsheet)
+
+The five Soil Climate Analysis Network (SCAN) datasets included in this repository contain daily soil moisture and climate data at sites located in the state of California. Each dataset contains data from a single sampling site in California, so a total of five sites are represented. These sites are located at different elevations and in various regions of the state.
+
+\newpage
+
+# Exploratory Analysis 
+
+
+
+\newpage
+
+# Analysis
+
+
+
+## Question 1: <insert specific question here and add additional subsections for additional questions below, if needed>
+
+## Question 2: 
+
+
+
+
+\newpage
+
+# Summary and Conclusions
+
+
+\newpage
+
+# References
+<add references here if relevant, otherwise delete this section> 

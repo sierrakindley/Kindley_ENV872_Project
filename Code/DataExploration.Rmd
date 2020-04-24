@@ -6,13 +6,15 @@ output: html_document
 ---
 
 ```{r, message = FALSE}
-getwd() #verify working directory
-library(tidyverse) #load tidyverse package
-library(lubridate) #load lubridate package
+#Set and verify working directory
+setwd("/Users/sierr/Documents/Duke University/ENVIRON-872L/Kindley_ENV872_Project")
+getwd() 
+library(tidyverse) 
+library(lubridate) 
 library(plyr)
 library(dplyr)
 library(ggplot2)
-library(cowplot) #load cowplot package
+library(cowplot) 
 library(RColorBrewer)
 ```
 

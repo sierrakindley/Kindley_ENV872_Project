@@ -1,0 +1,81 @@
+---
+title: "Data Processing and Wrangling"
+author: "Sierra Kindley"
+date: "Spring 2020"
+output: pdf_document
+---
+
+```{r}
+#Filter out unnecessary data, leaving only data needed for analysis
+SCAN.BodieHills.CA.processed <- 
+  SCAN.BodieHills.CA %>%
+  mutate(year = year(date)) %>%
+  filter(year > 2014 & year < 2020) %>%
+  select(date, station_ID, solar_rad_avg, soil_moist_perc_A_2in:soil_temp_E_40in)
+
+SCAN.DeepSprings.CA.processed <- 
+  SCAN.DeepSprings.CA %>%
+  mutate(year = year(date)) %>%
+  filter(year > 2014 & year < 2020) %>%
+  select(date, station_ID, solar_rad_avg, soil_moist_perc_A_2in:soil_temp_E_40in)
+
+SCAN.FrenchGulch.CA.processed <- 
+  SCAN.FrenchGulch.CA %>%
+  mutate(year = year(date)) %>%
+  filter(year > 2014 & year < 2020) %>%
+  select(date, station_ID, solar_rad_avg, soil_moist_perc_A_2in:soil_temp_E_40in)
+
+SCAN.CochoraRanch.CA.processed <- 
+  SCAN.CochoraRanch.CA %>%
+  mutate(year = year(date)) %>%
+  filter(year > 2014 & year < 2020) %>%
+  select(date, station_ID, solar_rad_avg, soil_moist_perc_A_2in:soil_temp_E_40in)
+
+SCAN.FordDryLake.CA.processed <- 
+  SCAN.FordDryLake.CA %>%
+  mutate(year = year(date)) %>%
+  filter(year > 2014 & year < 2020) %>%
+  select(date, station_ID, solar_rad_avg, soil_moist_perc_A_2in:soil_temp_E_40in)
+
+#Add 'station_name_elev' column to each data frame (will eventually help with desired labeling of plot facets)
+SCAN.BodieHills.CA.processed$station_name_elev <- c('Bodie Hills (7825 ft)')
+SCAN.DeepSprings.CA.processed$station_name_elev <- c('Deep Springs (5399 ft)')
+SCAN.FrenchGulch.CA.processed$station_name_elev <- c('French Gulch (3704 ft)')
+SCAN.CochoraRanch.CA.processed$station_name_elev <- c('Cochora Ranch (2697 ft)')
+SCAN.FordDryLake.CA.processed$station_name_elev <- c('Ford Dry Lake (394 ft)')
+
+#Add 'elevation_ft' column to each data frame
+SCAN.BodieHills.CA.processed$elevation_ft <- c(7825)
+SCAN.DeepSprings.CA.processed$elevation_ft <- c(5399)
+SCAN.FrenchGulch.CA.processed$elevation_ft <- c(3704)
+SCAN.CochoraRanch.CA.processed$elevation_ft <- c(2697)
+SCAN.FordDryLake.CA.processed$elevation_ft <- c(394)
+
+#Combine all six processed data frames into a single data frame
+SCAN.CA.1519 <- rbind(SCAN.BodieHills.CA.processed, SCAN.DeepSprings.CA.processed, SCAN.FrenchGulch.CA.processed, SCAN.CochoraRanch.CA.processed, SCAN.FordDryLake.CA.processed)
+
+#Add separate 'month' and 'year' columns by parsing 'date' column
+SCAN.CA.1519 <- mutate(SCAN.CA.1519, month = month(date))
+SCAN.CA.1519 <- mutate(SCAN.CA.1519, year = year(date))
+
+#Omit all NAs from data frame
+SCAN.CA.1519.complete <- na.omit(SCAN.CA.1519)
+
+#Group data by station ID, month, and year; calculate monthly averages for each parameter
+SCAN.CA.1519.summaries <- 
+  SCAN.CA.1519.complete %>%
+  group_by(station_name_elev, month, year) %>%
+  summarise_all(mean)
+
+#Modify 'date' column so that it contains each month-year combo. set as first day of month
+SCAN.CA.1519.summaries$date <- as.Date(paste(SCAN.CA.1519.summaries$year, 
+                                             SCAN.CA.1519.summaries$month, 
+                                                1, sep = "-"), 
+                                          format = "%Y-%m-%d")
+
+#Reorder the data so the plot facets can be more easily ordered by descending elevation
+SCAN.CA.1519.summaries$station_name_elev <- factor(SCAN.CA.1519.summaries$station_name_elev, levels = c("Bodie Hills (7825 ft)", "Deep Springs (5399 ft)", "French Gulch (3704 ft)", "Cochora Ranch (2697 ft)", "Ford Dry Lake (394 ft)"))
+
+#Save processed dataset
+write.csv(SCAN.CA.1519.summaries, file = "./Data/Processed/SCAN_AllSitesCA_processed.csv", row.names = FALSE)
+```

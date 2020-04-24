@@ -1,0 +1,99 @@
+---
+title: "Data Analysis"
+author: "Sierra Kindley"
+date: "Spring 2020"
+output: html_document
+---
+
+```{r}
+#Build new theme 'sierratheme', define its parameters, and set as default theme
+sierratheme <- theme_classic(base_size = 14) +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "top", 
+        plot.title = element_text(face = "bold", size = 16, 
+                                  color = "black", hjust = 0.5))
+theme_set(sierratheme)
+```
+
+```{r}
+#Faceted plot for solar radiation by site   
+Plot2 <- 
+  ggplot(SCAN.CA.1519.summaries, aes(x = date, y = solar_rad_avg, color = station_name_elev)) +
+  geom_point() +
+  facet_wrap(vars(station_name_elev), nrow = 5) + #create facets by NLCD class
+  xlab(expression(paste("Date"))) + #change x-label
+  ylab(expression(paste("Mean Monthly Solar Radiation"))) #change y-label
+print(Plot2) #print plot
+```
+
+```{r}
+#Plot mulitple columns of data simultaneously
+Plot.multiple1 <-
+  SCAN.CA.1519.summaries %>%
+  rownames_to_column() %>%
+  gather(key = key, value = value, soil_moist_perc_A_2in:soil_moist_perc_E_40in) %>%
+  mutate(rowname = factor(rowname)) %>%
+  ggplot(aes(date, value, color = key)) +
+  geom_point(alpha = 0.85, cex = 2) +
+  facet_wrap(vars(station_name_elev), nrow = 5, ) +
+  xlab(expression(paste("Date"))) + #change x-label
+  ylab(expression(paste("Mean Monthly Soil Moisture (%)"))) + #change y-label
+  labs(title = "Soil Moisture at Depth Across California SCAN Stations", color = "Soil Depth") +
+  scale_color_manual(values = c("#CCFFFF", "#66CCFF", "#3399CC", "#006699", "#003366"), labels = c("2 in", "4 in", "8 in",
+                                "20 in", "40 in")) +
+  scale_x_date(date_breaks = "1 year", date_labels = c("2020", "2015", "2016", "2017", "2018", "2019")) 
+plot(Plot.multiple1)
+
+Caption.multiple1 <- 
+  ggplot() +
+  theme(axis.line = element_blank(), axis.text =
+          element_text(color = "black", size = 9),
+          plot.title = element_text(size = 9, 
+                                  color = "black")) + 
+  labs(title = "Figure 1. Mean monthly soil moisture (%) at depth accross five Soil Climate Analysis Network (SCAN) stations in California. \n Soil moisture was measured at soil depths of 2in, 4in, 8in, 20in, and 40in from 2015-2019. Each of the five SCAN stations \n are located at different elevations and in various regions of California. The value listed beside each station name \n denotes the elevation, in feet above sea level, of that given site. Please note: Data was not collected at the French Gulch \n station from May 2016-April 2017. However, this site was included in this analysis, as the trends evident in the present \n data are valuable to understanding trends in soil moisture at similar elevations/sites over time.")
+
+Plot.multiple1.withcaption <-
+  cowplot::plot_grid(Plot.multiple1, Caption.multiple1, 
+                     align = 'h', axis = "a", 
+                     nrow = 2, rel_heights = c(.9,.1))
+
+ggsave("MeanMonthlySoilMoistureAllSites.png", width = 11, 
+       height = 9, dpi = 300)
+```
+
+```{r}
+#Plot soil temp vs. depth
+Plot.multiple2 <-
+  SCAN.CA.1519.summaries %>%
+  rownames_to_column() %>%
+  gather(key = key, value = value, soil_temp_A_2in:soil_temp_E_40in) %>%
+  mutate(rowname = factor(rowname)) %>%
+  ggplot(aes(date, value, color = key)) +
+  geom_point(alpha = 0.85, cex = 2) +
+  facet_wrap(vars(station_name_elev), nrow = 5, ) +
+  xlab(expression(paste("Date"))) + #change x-label
+  ylab(expression(paste("Mean Monthly Soil Temperature ("*~degree*F*")"))) + #change y-label
+  labs(title = "Soil Temperature at Depth Across California SCAN Stations", color = "Soil Depth") +
+  scale_color_manual(values = c("#CCFFFF", "#66CCFF", "#3399CC", "#006699", "#003366"), labels = c("2 in", "4 in", "8 in",
+                                "20 in", "40 in")) +
+  scale_x_date(date_breaks = "1 year", date_labels = c("2020", "2015", "2016", "2017", "2018", "2019")) 
+plot(Plot.multiple2)
+
+#theme(legend.title = element_blank())) + #remove legend title
+
+#scale_color_brewer("Blues", labels = c(expression("20in"), 
+                                #expression("2in"), 
+                                #expression("40in"),
+                                #expression("4in"),
+                                #expression("8in")))
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

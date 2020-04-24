@@ -1,0 +1,120 @@
+---
+title: "Data Exploration"
+author: "Sierra Kindley"
+date: "Spring 2020"
+output: html_document
+---
+
+```{r, message = FALSE}
+getwd() #verify working directory
+library(tidyverse) #load tidyverse package
+library(lubridate) #load lubridate package
+library(plyr)
+library(dplyr)
+library(ggplot2)
+library(cowplot) #load cowplot package
+library(RColorBrewer)
+```
+
+```{r}
+#Import datasets
+SCAN.BodieHills.CA <- read.csv("./Data/Raw/SCAN_BodieHillsCA_raw.csv")
+SCAN.DeepSprings.CA <- read.csv("./Data/Raw/SCAN_DeepSpringsCA_raw.csv")
+SCAN.FrenchGulch.CA <- read.csv("./Data/Raw/SCAN_FrenchGulchCA_raw.csv")
+SCAN.CochoraRanch.CA <- read.csv("./Data/Raw/SCAN_CochoraRanchCA_raw.csv")
+SCAN.FordDryLake.CA <- read.csv("./Data/Raw/SCAN_FordDryLakeCA_raw.csv")
+```
+
+```{r}
+#Initial exploration of six datasets
+View(SCAN.BodieHills.CA)
+class(SCAN.BodieHills.CA)
+colnames(SCAN.BodieHills.CA)
+str(SCAN.BodieHills.CA)
+dim(SCAN.BodieHills.CA)
+length(SCAN.BodieHills.CA)
+head(SCAN.BodieHills.CA)
+tail(SCAN.BodieHills.CA)
+summary(SCAN.BodieHills.CA)
+
+View(SCAN.DeepSprings.CA)
+class(SCAN.DeepSprings.CA)
+colnames(SCAN.DeepSprings.CA)
+str(SCAN.DeepSprings.CA)
+dim(SCAN.DeepSprings.CA)
+length(SCAN.DeepSprings.CA)
+head(SCAN.DeepSprings.CA)
+tail(SCAN.DeepSprings.CA)
+summary(SCAN.DeepSprings.CA)
+
+View(SCAN.FrenchGulch.CA)
+class(SCAN.FrenchGulch.CA)
+colnames(SCAN.FrenchGulch.CA)
+str(SCAN.FrenchGulch.CA)
+dim(SCAN.FrenchGulch.CA)
+length(SCAN.FrenchGulch.CA)
+head(SCAN.FrenchGulch.CA)
+tail(SCAN.FrenchGulch.CA)
+summary(SCAN.FrenchGulch.CA)
+
+View(SCAN.CochoraRanch.CA)
+class(SCAN.CochoraRanch.CA)
+colnames(SCAN.CochoraRanch.CA)
+str(SCAN.CochoraRanch.CA)
+dim(SCAN.CochoraRanch.CA)
+length(SCAN.CochoraRanch.CA)
+head(SCAN.CochoraRanch.CA)
+tail(SCAN.CochoraRanch.CA)
+summary(SCAN.CochoraRanch.CA)
+
+View(SCAN.FordDryLake.CA)
+class(SCAN.FordDryLake.CA)
+colnames(SCAN.FordDryLake.CA)
+str(SCAN.FordDryLake.CA)
+dim(SCAN.FordDryLake.CA)
+length(SCAN.FordDryLake.CA)
+head(SCAN.FordDryLake.CA)
+tail(SCAN.FordDryLake.CA)
+summary(SCAN.FordDryLake.CA)
+```
+
+```{r}
+#Rename columns in each of the six datasets
+colnames(SCAN.BodieHills.CA) <- c("date", "station_ID", "air_temp_max", "air_temp_min", "precip_inc", "rel_humidity", "wind_speed_max", "wind_speed_avg", "solar_rad_avg", "solar_rad_lang_total", "vapor_press_part", "vapor_press_sat", "soil_moist_perc_A_2in", "soil_moist_perc_B_4in", "soil_moist_perc_C_8in", "soil_moist_perc_D_20in", "soil_moist_perc_E_40in", "soil_temp_A_2in", "soil_temp_B_4in", "soil_temp_C_8in", "soil_temp_D_20in", "soil_temp_E_40in")
+
+colnames(SCAN.DeepSprings.CA) <- c("date", "station_ID", "air_temp_max", "air_temp_min", "precip_inc", "rel_humidity", "wind_speed_max", "wind_speed_avg", "solar_rad_avg", "solar_rad_lang_total", "vapor_press_part", "vapor_press_sat", "soil_moist_perc_A_2in", "soil_moist_perc_B_4in", "soil_moist_perc_C_8in", "soil_moist_perc_D_20in", "soil_moist_perc_E_40in", "soil_temp_A_2in", "soil_temp_B_4in", "soil_temp_C_8in", "soil_temp_D_20in", "soil_temp_E_40in")
+
+colnames(SCAN.FrenchGulch.CA) <- c("date", "station_ID", "air_temp_max", "air_temp_min", "precip_inc", "rel_humidity", "wind_speed_max", "wind_speed_avg", "solar_rad_avg", "solar_rad_lang_total", "vapor_press_part", "vapor_press_sat", "soil_moist_perc_A_2in", "soil_moist_perc_B_4in", "soil_moist_perc_C_8in", "soil_moist_perc_D_20in", "soil_moist_perc_E_40in", "soil_temp_A_2in", "soil_temp_B_4in", "soil_temp_C_8in", "soil_temp_D_20in", "soil_temp_E_40in")
+
+colnames(SCAN.CochoraRanch.CA) <- c("date", "station_ID", "air_temp_max", "air_temp_min", "precip_inc", "rel_humidity", "wind_speed_max", "wind_speed_avg", "solar_rad_avg", "solar_rad_lang_total", "vapor_press_part", "vapor_press_sat", "soil_moist_perc_A_2in", "soil_moist_perc_B_4in", "soil_moist_perc_C_8in", "soil_moist_perc_D_20in", "soil_moist_perc_E_40in", "soil_temp_A_2in", "soil_temp_B_4in", "soil_temp_C_8in", "soil_temp_D_20in", "soil_temp_E_40in")
+
+colnames(SCAN.FordDryLake.CA) <- c("date", "station_ID", "air_temp_max", "air_temp_min", "precip_inc", "rel_humidity", "wind_speed_max", "wind_speed_avg", "solar_rad_avg", "solar_rad_lang_total", "vapor_press_part", "vapor_press_sat", "soil_moist_perc_A_2in", "soil_moist_perc_B_4in", "soil_moist_perc_C_8in", "soil_moist_perc_D_20in", "soil_moist_perc_E_40in", "soil_temp_A_2in", "soil_temp_B_4in", "soil_temp_C_8in", "soil_temp_D_20in", "soil_temp_E_40in")
+```
+
+```{r}
+#Check class of 'date' column in each data frame and set as date
+class(SCAN.BodieHills.CA$date)
+SCAN.BodieHills.CA$date <- as.Date(SCAN.BodieHills.CA$date, format = "%m/%d/%Y")
+
+class(SCAN.DeepSprings.CA$date)
+SCAN.DeepSprings.CA$date <- as.Date(SCAN.DeepSprings.CA$date, format = "%m/%d/%Y")
+
+class(SCAN.FrenchGulch.CA$date)
+SCAN.FrenchGulch.CA$date <- as.Date(SCAN.FrenchGulch.CA$date, format = "%m/%d/%Y")
+
+class(SCAN.CochoraRanch.CA$date)
+SCAN.CochoraRanch.CA$date <- as.Date(SCAN.CochoraRanch.CA$date, format = "%m/%d/%Y")
+
+class(SCAN.FordDryLake.CA$date)
+SCAN.FordDryLake.CA$date <- as.Date(SCAN.FordDryLake.CA$date, format = "%m/%d/%Y")
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

@@ -15,7 +15,7 @@ library(plyr)
 library(dplyr)
 library(ggplot2)
 library(cowplot) 
-library(RColorBrewer)
+library(agricolae)
 ```
 
 ```{r}
@@ -111,12 +111,72 @@ class(SCAN.FordDryLake.CA$date)
 SCAN.FordDryLake.CA$date <- as.Date(SCAN.FordDryLake.CA$date, format = "%m/%d/%Y")
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+#Build new theme 'sierratheme', define its parameters, and set as default theme
+sierratheme <- theme_classic(base_size = 14) +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "top", 
+        plot.title = element_text(face = "bold", size = 16, 
+                                  color = "black", hjust = 0.5))
+theme_set(sierratheme)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+#How do mean monthly solar radiation values at the five SCAN sites compare during the period of study?
+#Faceted plot of solar radiation by site   
+Plot.SolarRad.AllSites <- 
+  ggplot(SCAN.CA.1519.summaries, aes(x = date, y = solar_rad_avg, color = station_name_elev)) +
+  geom_point(cex = 2) +
+  facet_wrap(vars(station_name_elev), nrow = 5) + #create facets by station
+  xlab(expression(paste("Date"))) +
+  ylab(expression(paste("Mean Monthly Solar Radiaion (W/m"^2*")"))) +
+  labs(title = "Mean Monthly Solar Radiation Across California SCAN Stations") +
+  scale_x_date(date_breaks = "1 year", date_labels = c("2020", "2015", "2016", "2017", "2018", "2019")) +
+  scale_color_manual(values = c("#CC9966", "#933366", "#CC6699", "#9966CC", "#CC99FF")) +
+  theme(legend.position = "none") #remove legend from plot
+print(Plot.SolarRad.AllSites)
+
+#Create caption for plot
+Caption.SolarRad.AllSites <- 
+  ggplot() +
+  theme(axis.line = element_blank(), axis.text =
+          element_text(color = "black", size = 9),
+          plot.title = element_text(size = 9, 
+                                  color = "black")) + 
+  labs(title = "Figure 1. Mean monthly solar radiation (watts/square meter) accross five Soil Climate Analysis Network (SCAN) stations in California from 2015-2019. Each of the \n five SCAN stations are located at different elevations and in various regions of California. The value listed beside each station name denotes the elevation, in feet \n above sea level, of that given site. Please note: Data was not collected at the French Gulch station from May 2016-April 2017. However, this site was included in \n this analysis, as the trends evident in the present data are valuable to understanding trends at similar elevations/sites over time.")
+
+#Combine plot and caption into single figure
+Plot.SolarRad.AllSites.withcaption <-
+  cowplot::plot_grid(Plot.SolarRad.AllSites, Caption.SolarRad.AllSites, 
+                     align = 'h', axis = "a", 
+                     nrow = 2, rel_heights = c(.9,.1))
+#Save plot
+ggsave(path = "/Users/sierr/Documents/Duke University/ENVIRON-872L/Kindley_ENV872_Project/Outputs", filename = "MeanMonthlySolarRadiation_AllSites.png", width = 11, height = 9, dpi = 300)
+```
+
+```{r}
+#Does mean monthly average solar radiation differ among the five SCAN sites?
+shapiro.test(SCAN.CA.1519.summaries$solar_rad_avg[SCAN.CA.1519.summaries$station_name_elev]) #null hypothesis rejected (p < 0.05); not normally distributed
+
+qqnorm(SCAN.CA.1519.summaries$solar_rad_avg); qqline(SCAN.CA.1519.summaries$solar_rad_avg)
+
+SolarRadiation.anova <- aov(data = SCAN.CA.1519.summaries, solar_rad_avg ~ station_name_elev) 
+summary(SolarRadiation.anova) #null hypothesis rejected (p < 0.05); mean solar radiation values are not equal (there is some statistically significant variance)
+
+SolarRadiation.anova2 <- lm(data = SCAN.CA.1519.summaries, solar_rad_avg ~ station_name_elev)
+summary(SolarRadiation.anova2)
+plot(SolarRadiation.anova2)
+
+#Does mean monthly average solar radiation differ by month?
+shapiro.test(SCAN.CA.1519.summaries$solar_rad_avg[SCAN.CA.1519.summaries$month]) #null hypothesis rejected (p < 0.05); not normally distributed
+
+qqnorm(SCAN.CA.1519.summaries$solar_rad_avg); qqline(SCAN.CA.1519.summaries$solar_rad_avg)
+
+SolarRadiation.anova3 <- aov(data = SCAN.CA.1519.summaries, solar_rad_avg ~ month) 
+summary(SolarRadiation.anova3) #null hypothesis not rejected (p > 0.05); differences in mean solar radiation values are not statistically significant (there is no statistically significant variance)
+
+SolarRadiation.anova4 <- lm(data = SCAN.CA.1519.summaries, solar_rad_avg ~ month)
+summary(SolarRadiation.anova4)
+plot(SolarRadiation.anova4)
+```
+

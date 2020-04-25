@@ -16,38 +16,6 @@ theme_set(sierratheme)
 ```
 
 ```{r}
-#Faceted plot of solar radiation by site   
-Plot.SolarRad.AllSites <- 
-  ggplot(SCAN.CA.1519.summaries, aes(x = date, y = solar_rad_avg, color = station_name_elev)) +
-  geom_point(cex = 2) +
-  facet_wrap(vars(station_name_elev), nrow = 5) + #create facets by station
-  xlab(expression(paste("Date"))) +
-  ylab(expression(paste("Mean Monthly Solar Radiaion (W/m"^2*")"))) +
-  labs(title = "Mean Monthly Solar Radiation Across California SCAN Stations") +
-  scale_x_date(date_breaks = "1 year", date_labels = c("2020", "2015", "2016", "2017", "2018", "2019")) +
-  scale_color_manual(values = c("#CC9966", "#933366", "#CC6699", "#9966CC", "#CC99FF")) +
-  theme(legend.position = "none") #remove legend from plot
-print(Plot.SolarRad.AllSites)
-
-#Create caption for plot
-Caption.SolarRad.AllSites <- 
-  ggplot() +
-  theme(axis.line = element_blank(), axis.text =
-          element_text(color = "black", size = 9),
-          plot.title = element_text(size = 9, 
-                                  color = "black")) + 
-  labs(title = "Figure 1. Mean monthly solar radiation (watts/square meter) accross five Soil Climate Analysis Network (SCAN) stations in California from 2015-2019. Each of the \n five SCAN stations are located at different elevations and in various regions of California. The value listed beside each station name denotes the elevation, in feet \n above sea level, of that given site. Please note: Data was not collected at the French Gulch station from May 2016-April 2017. However, this site was included in \n this analysis, as the trends evident in the present data are valuable to understanding trends at similar elevations/sites over time.")
-
-#Combine plot and caption into single figure
-Plot.SolarRad.AllSites.withcaption <-
-  cowplot::plot_grid(Plot.SolarRad.AllSites, Caption.SolarRad.AllSites, 
-                     align = 'h', axis = "a", 
-                     nrow = 2, rel_heights = c(.9,.1))
-#Save plot
-ggsave(path = "/Users/sierr/Documents/Duke University/ENVIRON-872L/Kindley_ENV872_Project/Outputs", filename = "MeanMonthlySolarRadiation_AllSites.png", width = 11, height = 9, dpi = 300)
-```
-
-```{r}
 #Faceted plot of mean monthly soil moisture at depth at each site
 Plot.SoilMoist.Depth <-
   SCAN.CA.1519.summaries %>%
@@ -84,6 +52,53 @@ ggsave(path = "/Users/sierr/Documents/Duke University/ENVIRON-872L/Kindley_ENV87
 ```
 
 ```{r}
+#Faceted plot of mean monthly soil moisture by solar radiation at each site
+Plot.SoilMoist.SolarRad <-
+  SCAN.CA.1519.summaries %>%
+  rownames_to_column() %>%
+  gather(key = key, value = value, soil_moist_perc_A_2in:soil_moist_perc_E_40in) %>%
+  mutate(rowname = factor(rowname)) %>%
+  ggplot(aes(solar_rad_avg, value, color = key)) +
+  geom_point(alpha = 0.85, cex = 2) +
+  facet_wrap(vars(station_name_elev), nrow = 5, ) + #create facets by station
+  xlab(expression(paste("Mean Monthly Solar Radiaion (W/m"^2*")"))) + 
+  ylab(expression(paste("Mean Monthly Soil Moisture (%)"))) + 
+  labs(title = "Soil Moisture by Solar Radiation Across California SCAN Stations", color = "Soil Depth") +
+  scale_color_manual(values = c("#CCFFFF", "#66CCFF", "#3399CC", "#006699", "#003366"), labels = c("2 in", "4 in", "8 in",
+                                "20 in", "40 in"))
+plot(Plot.SoilMoist.SolarRad)
+
+#Create caption for plot
+Caption.SoilMoist.SolarRad <- 
+  ggplot() +
+  theme(axis.line = element_blank(), axis.text =
+          element_text(color = "black", size = 9),
+          plot.title = element_text(size = 9, 
+                                  color = "black")) + 
+  labs(title = "Figure 3. Mean monthly soil moisture (%) by mean monthly solar radiation (watts/square meter) accross five Soil Climate Analysis Network (SCAN) stations in \n California from 2015-2019. Soil moisture was measured at soil depths of 2in, 4in, 8in, 20in, and 40in from 2015-2019. Each of the five SCAN stations are located \n at different elevations and in various regions of California. The value listed beside each station name denotes the elevation, in feet above sea level, of that \n given site. Please note: Data was not collected at the French Gulch station from May 2016-April 2017. However, this site was included in this analysis, as the \n trends evident in the present data are valuable to understanding trends at similar elevations/sites over time.")
+
+#Combine plot and caption into single figure
+Plot.SoilMoist.SolarRad.withcaption <-
+  cowplot::plot_grid(Plot.SoilMoist.SolarRad, Caption.SoilMoist.SolarRad,
+                     align = 'h', axis = "a", 
+                     nrow = 2, rel_heights = c(.9,.1))
+#Save plot
+ggsave(path = "/Users/sierr/Documents/Duke University/ENVIRON-872L/Kindley_ENV872_Project/Outputs", filename = "MeanMonthlySoilMoistureBySolarRadiation_AllSites.png", width = 11, height = 9, dpi = 300)
+```
+
+```{r}
+#How does mean monthly soil moisture at 2in depth vary across SCAN stations and amounts of solar radiation received?
+
+SoilMoist2in.anova.2way <- aov(data = SCAN.CA.1519.summaries, soil_moist_perc_A_2in ~ station_name_elev * solar_rad_avg) 
+summary(SoilMoist2in.anova.2way) #null hypothesis rejected (p < 0.05); mean solar radiation values are not equal (there is some variance)
+TukeyHSD(SoilMoist2in.anova.2way)
+SoilMoist2in.interaction <- with(SCAN.CA.1519.summaries, interaction(station_name_elev, solar_rad_avg))
+SoilMoist2in.anova2way2 <- aov(data = SCAN.CA.1519.summaries, soil_moist_perc_A_2in ~ SoilMoist2in.interaction)
+SoilMoist2in.groups <- HSD.test(SoilMoist2in.anova2way2, "SoilMoist2in.interaction", group = TRUE)
+SoilMoist2in.groups
+```
+
+```{r}
 #Faceted plot of mean monthly soil temperature at depth at each site
 Plot.SoilTemp.Depth <-
   SCAN.CA.1519.summaries %>%
@@ -108,7 +123,7 @@ Caption.SoilTemp.Depth <-
           element_text(color = "black", size = 9),
           plot.title = element_text(size = 9, 
                                   color = "black")) + 
-  labs(title = "Figure 3. Mean monthly soil temperature (degrees Fahrenheit) at depth (inches) accross five Soil Climate Analysis Network (SCAN) stations in California from \n 2015-2019. Soil temperature was measured at soil depths of 2in, 4in, 8in, 20in, and 40in from 2015-2019. Each of the five SCAN stations are located at different \n elevations and in various regions of California. The value listed beside each station name denotes the elevation, in feet above sea level, of that given site. \n Please note: Data was not collected at the French Gulch station from May 2016-April 2017. However, this site was included in this analysis, as the trends evident \n in the present data are valuable to understanding trends at similar elevations/sites over time.")
+  labs(title = "Figure 4. Mean monthly soil temperature (degrees Fahrenheit) at depth (inches) accross five Soil Climate Analysis Network (SCAN) stations in California from \n 2015-2019. Soil temperature was measured at soil depths of 2in, 4in, 8in, 20in, and 40in from 2015-2019. Each of the five SCAN stations are located at different \n elevations and in various regions of California. The value listed beside each station name denotes the elevation, in feet above sea level, of that given site. \n Please note: Data was not collected at the French Gulch station from May 2016-April 2017. However, this site was included in this analysis, as the trends evident \n in the present data are valuable to understanding trends at similar elevations/sites over time.")
 
 #Combine plot and caption into single figure
 Plot.SoilTemp.Depth.withcaption <-
@@ -117,41 +132,6 @@ Plot.SoilTemp.Depth.withcaption <-
                      nrow = 2, rel_heights = c(.9,.1))
 #Save plot
 ggsave(path = "/Users/sierr/Documents/Duke University/ENVIRON-872L/Kindley_ENV872_Project/Outputs", filename = "MeanMonthlySoilTemperatureAtDepth_AllSites.png", width = 11, height = 9, dpi = 300)
-```
-
-```{r}
-#Faceted plot of mean monthly soil moisture by solar radiation at each site
-Plot.SoilMoist.SolarRad <-
-  SCAN.CA.1519.summaries %>%
-  rownames_to_column() %>%
-  gather(key = key, value = value, soil_moist_perc_A_2in:soil_moist_perc_E_40in) %>%
-  mutate(rowname = factor(rowname)) %>%
-  ggplot(aes(solar_rad_avg, value, color = key)) +
-  geom_point(alpha = 0.85, cex = 2) +
-  facet_wrap(vars(station_name_elev), nrow = 5, ) + #create facets by station
-  xlab(expression(paste("Mean Monthly Solar Radiaion (W/m"^2*")"))) + 
-  ylab(expression(paste("Mean Monthly Soil Moisture (%)"))) + 
-  labs(title = "Soil Moisture by Solar Radiation Across California SCAN Stations", color = "Soil Depth") +
-  scale_color_manual(values = c("#CCFFFF", "#66CCFF", "#3399CC", "#006699", "#003366"), labels = c("2 in", "4 in", "8 in",
-                                "20 in", "40 in"))
-plot(Plot.SoilMoist.SolarRad)
-
-#Create caption for plot
-Caption.SoilMoist.SolarRad <- 
-  ggplot() +
-  theme(axis.line = element_blank(), axis.text =
-          element_text(color = "black", size = 9),
-          plot.title = element_text(size = 9, 
-                                  color = "black")) + 
-  labs(title = "Figure 4. Mean monthly soil moisture (%) by mean monthly solar radiation (watts/square meter) accross five Soil Climate Analysis Network (SCAN) stations in \n California from 2015-2019. Soil moisture was measured at soil depths of 2in, 4in, 8in, 20in, and 40in from 2015-2019. Each of the five SCAN stations are located \n at different elevations and in various regions of California. The value listed beside each station name denotes the elevation, in feet above sea level, of that \n given site. Please note: Data was not collected at the French Gulch station from May 2016-April 2017. However, this site was included in this analysis, as the \n trends evident in the present data are valuable to understanding trends at similar elevations/sites over time.")
-
-#Combine plot and caption into single figure
-Plot.SoilMoist.SolarRad.withcaption <-
-  cowplot::plot_grid(Plot.SoilMoist.SolarRad, Caption.SoilMoist.SolarRad,
-                     align = 'h', axis = "a", 
-                     nrow = 2, rel_heights = c(.9,.1))
-#Save plot
-ggsave(path = "/Users/sierr/Documents/Duke University/ENVIRON-872L/Kindley_ENV872_Project/Outputs", filename = "MeanMonthlySoilMoistureBySolarRadiation_AllSites.png", width = 11, height = 9, dpi = 300)
 ```
 
 ```{r}
@@ -189,12 +169,9 @@ Plot.SoilTemp.SolarRad.withcaption <-
 ggsave(path = "/Users/sierr/Documents/Duke University/ENVIRON-872L/Kindley_ENV872_Project/Outputs", filename = "MeanMonthlySoilTemperatureBySolarRadiation_AllSites.png", width = 11, height = 9, dpi = 300)
 ```
 
-## Including Plots
+```{r}
+#How does mean monthly soil temperature at 2in, 4in, 8in, 20in, and 40in depth vary across SCAN stations and amounts of solar radiation received?
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+SoilMoist.Depth.anova.2way <- aov(data = SCAN.CA.1519.summaries, solar_rad_avg ~ station_name_elev) 
+summary(SolarRadiation.anova) #null hypothesis rejected (p < 0.05); mean solar radiation values are not equal (there is some variance)
 ```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
